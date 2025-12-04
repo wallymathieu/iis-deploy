@@ -42,8 +42,7 @@ function Move-Site {
     $site = Get-Website -Name $siteName -ErrorAction SilentlyContinue
     if ($site) {
         Write-Host "Updating physical path for site '$siteName' to '$newPath'"
-        $site.physicalPath = $newPath
-        $site | Set-Item
+        Set-ItemProperty -Path "IIS:\Sites\$siteName" -Name physicalPath -Value $newPath
         Write-Host "Site path updated successfully."
     } else {
         Write-Error "Site '$siteName' not found in IIS."
