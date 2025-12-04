@@ -1,0 +1,26 @@
+name: 'IIS Versioned Deploy'
+description: 'Allows to deploy a website on IIS with less downtime'
+inputs:
+  website-name:
+    description: "IIS website name"
+    required: true
+  source-path:
+    description: "The path to the source directory that will be deployed"
+    required: true
+  destination-path:
+    description: "The path to the site directory that will be deployed"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Deploy Application ${{ inputs.website-name }} on IIS
+      shell: powershell
+      run: >
+        ${{ github.action_path }}/scripts/deploy.ps1
+        ${{ inputs.source-path }}
+        ${{ inputs.destination-path }}
+        ${{ inputs.website-name }}
+branding:
+  icon: upload-cloud
+  color: blue
