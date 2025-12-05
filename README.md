@@ -48,6 +48,28 @@ r_5  <-- IIS points here
 ```
 <!-- end usage -->
 
+## Deploying on multiple runners
+
+If you need to deploy to multiple servers, you can use the matrix strategy with runner tags.
+This allows you to run the deployment job on multiple runners.
+
+```yaml
+jobs:
+  deploy:
+    strategy:
+      matrix:
+        prod-tag: [prod-1, prod-2, prod-3]
+    runs-on: [self-hosted, "${{ matrix.prod-tag }}"]
+    steps:
+      - uses: actions/checkout@v3
+      # ... build steps ...
+      - uses: wallymathieu/iis-deploy@main
+        with:
+          website-name: 'MyWebsite'
+          source-path: '${{ github.workspace }}\website\publish'
+          destination-path: 'C:\inetpub\website-releases'
+```
+
 ## License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
