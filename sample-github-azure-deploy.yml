@@ -1,0 +1,73 @@
+# Note that his file is esentially the action for deploying to Azure but with a changed deploy step and self hosted runner...
+name: Build and deploy ASP.Net Core app
+
+env:
+  DOTNET_VERSION: '10'                 # set this to the .NET Core version to use
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Set up dependency caching for faster builds
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload scripts for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: scripts
+          path: .github/deployment
+
+  deploy:
+    permissions:
+      contents: none
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+          path: myapp
+      - name: Download scripts from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: scripts
+          path: .github/deployment
+      - name: IIS Versioned Deploy
+        uses: wallymathieu/iis-deploy@main
+        with:
+          website-name: simple-site
+          source-path: ./myapp
+          destination-path: C:\simple-site
