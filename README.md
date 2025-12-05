@@ -56,13 +56,19 @@ This allows you to run the deployment job on multiple runners.
 ```yaml
 jobs:
   deploy:
+    permissions:
+      contents: none
+    needs: build
     strategy:
       matrix:
         prod-tag: [prod-1, prod-2, prod-3]
     runs-on: [self-hosted, "${{ matrix.prod-tag }}"]
     steps:
-      - uses: actions/checkout@v3
-      # ... build steps ...
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+          path: website\publish
       - uses: wallymathieu/iis-deploy@main
         with:
           website-name: 'MyWebsite'
