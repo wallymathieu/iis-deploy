@@ -10,6 +10,9 @@ inputs:
   destination-path:
     description: "The path to the site directory that will be deployed"
     required: true
+  number-to-keep:
+    description: "Number of previous deployments to keep"
+    required: false
 
 runs:
   using: "composite"
@@ -18,9 +21,10 @@ runs:
       shell: powershell
       run: >
         ${{ github.action_path }}/scripts/deploy.ps1
-        ${{ inputs.source-path }}
-        ${{ inputs.destination-path }}
-        ${{ inputs.website-name }}
+        -sourceDir ${{ inputs.source-path }}
+        -siteName ${{ inputs.website-name }}
+        -releaseParentDir ${{ inputs.destination-path }}
+        -keep ${{ inputs.number-to-keep }}
 branding:
   icon: upload-cloud
   color: blue
