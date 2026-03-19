@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && mkdir -p scripts && cp ../scripts/deploy.ps1 scripts/ && cp ../scripts/IisDeploy.psm1 scripts/",
+    "test": "tsc && mocha tests/_suite.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
+    "mocha": "^10.0.0",
     "@types/node": "^25.5.0",
     "@types/q": "^1.5.8",
     "sync-request": "^6.1.0",

@@ -8,7 +8,7 @@ async function run() {
         const destinationPath: string = tl.getPathInput('DestinationPath', true, false)!;
         const numberToKeep: string = tl.getInput('NumberToKeep', false) || '4';
 
-        const scriptPath = path.join(__dirname, '..', 'scripts', 'deploy.ps1');
+        const scriptPath = path.join(__dirname, 'scripts', 'deploy.ps1');
 
         const powershell = tl.tool(tl.which('powershell', true))
             .arg('-NonInteractive')
