@@ -1,0 +1,46 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "cdbae55f-a31a-47b4-8b89-037480ee6f14",
+    "name": "IISVersionedAppDeployment",
+    "friendlyName": "IIS Versioned App Deployment Task",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "helpMarkDown": "",
+    "author": "Oskar Gewalli",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Echo $(samplestring)",
+    "inputs": [
+        {
+         "name": "WebSiteName",
+      "type": "string",
+      "label": "Website Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the name of an existing website on the machine group machines"
+    },
+    {
+      "name": "Folder",
+      "type": "filePath",
+      "label": "Folder",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": true,
+      "helpMarkDown": "File path to the folder containing the site"
+    }
+    ],
+    "execution": {
+        "Node20_1": {
+            "target": "index.js"
+        }
+    }
+}
