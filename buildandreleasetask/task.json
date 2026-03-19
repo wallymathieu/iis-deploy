@@ -19,24 +19,40 @@
         "Minor": 1,
         "Patch": 0
     },
-    "instanceNameFormat": "Echo $(samplestring)",
+    "instanceNameFormat": "Deploy $(WebSiteName) on IIS",
     "inputs": [
         {
-         "name": "WebSiteName",
-      "type": "string",
-      "label": "Website Name",
-      "defaultValue": "",
-      "required": true,
-      "helpMarkDown": "Provide the name of an existing website on the machine group machines"
-    },
-    {
-      "name": "Folder",
-      "type": "filePath",
-      "label": "Folder",
-      "defaultValue": "$(System.DefaultWorkingDirectory)",
-      "required": true,
-      "helpMarkDown": "File path to the folder containing the site"
-    }
+            "name": "WebSiteName",
+            "type": "string",
+            "label": "Website Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of an existing IIS website on the target machine"
+        },
+        {
+            "name": "SourcePath",
+            "type": "filePath",
+            "label": "Source Path",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "Path to the source directory that will be deployed"
+        },
+        {
+            "name": "DestinationPath",
+            "type": "filePath",
+            "label": "Destination Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the parent directory where versioned release folders will be created"
+        },
+        {
+            "name": "NumberToKeep",
+            "type": "string",
+            "label": "Number of releases to keep",
+            "defaultValue": "4",
+            "required": false,
+            "helpMarkDown": "Number of previous deployments to retain"
+        }
     ],
     "execution": {
         "Node20_1": {
