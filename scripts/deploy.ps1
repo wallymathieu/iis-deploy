@@ -9,7 +9,7 @@ param(
     [string]$siteName,
 
     [Parameter(Mandatory=$false)]
-    [string]$appName,
+    [string]$appName = "",
 
     [Parameter(Mandatory=$true)]
     [string]$releaseParentDir,

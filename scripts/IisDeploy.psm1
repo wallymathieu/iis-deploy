@@ -36,12 +36,12 @@ function Move-Site {
         [Parameter(Mandatory=$true)]
         [string]$siteName,
         [Parameter(Mandatory=$false)]
-        [string]$appName,
+        [string]$appName = "",
         [Parameter(Mandatory=$true)]
         [string]$newPath
     )
     Import-Module WebAdministration -ErrorAction Stop
-    if ($appName) {
+    if (-not [string]::IsNullOrWhiteSpace($appName)) {
         $siteItem = "$siteName\$appName"
         $sitePath = "IIS:\Sites\$siteName\$appName"
         $site = Get-WebApplication -Site $siteName -Name $appName -ErrorAction SilentlyContinue
