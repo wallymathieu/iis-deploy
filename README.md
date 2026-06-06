@@ -36,6 +36,10 @@ r_4
 r_5  <-- IIS points here
 ```
 
+## AppCmd insights
+
+See [AppCmd operational guidance](docs/appcmd-operational-guidance.md).
+
 ## Usage
 
 <!-- start usage -->
