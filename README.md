@@ -40,7 +40,7 @@ r_5  <-- IIS points here
 
 <!-- start usage -->
 ```yaml
-- uses: wallymathieu/iis-deploy@main
+- uses: wallymathieu/iis-deploy@af23a6d2f13062a20d60196ada2528a400e829ca
   with:
     website-name: 'MyWebsite'
     app-name: 'virtual_app'
@@ -67,11 +67,11 @@ jobs:
     runs-on: [self-hosted, "${{ matrix.prod-tag }}"]
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: .net-app
           path: website\publish
-      - uses: wallymathieu/iis-deploy@main
+      - uses: wallymathieu/iis-deploy@af23a6d2f13062a20d60196ada2528a400e829ca
         with:
           website-name: 'MyWebsite'
           source-path: '${{ github.workspace }}\website\publish'
@@ -81,4 +81,3 @@ jobs:
 ## License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
-

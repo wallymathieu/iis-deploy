@@ -68,7 +68,19 @@ function Cleanup-OldDirectories {
         [string]$targetFolder,
         [int]$keep = 4
     )
-    $releaseDirs = Get-ChildItem -Path $targetFolder -Directory | Where-Object { $_.Name -match '^r_\d+$' } | Sort-Object -Property @{Expression = {[int]($_.Name -replace 'r_','')} } -Descending
+    if ($keep -lt 1) {
+        throw "keep must be at least 1."
+    }
+
+    $allReleaseDirs = Get-ChildItem -Path $targetFolder -Directory | Where-Object { $_.Name -match '^r_\d+$' }
+    $unsafeReleaseDirs = $allReleaseDirs | Where-Object { $_.Attributes -band [System.IO.FileAttributes]::ReparsePoint }
+    foreach ($unsafeDir in $unsafeReleaseDirs) {
+        Write-Warning "Skipping release folder '$($unsafeDir.FullName)' because it is a reparse point."
+    }
+
+    $releaseDirs = $allReleaseDirs |
+        Where-Object { -not ($_.Attributes -band [System.IO.FileAttributes]::ReparsePoint) } |
+        Sort-Object -Property @{Expression = {[int]($_.Name -replace 'r_','')} } -Descending
     
     if ($releaseDirs.Count -gt $keep) {
         $dirsToRemove = $releaseDirs | Select-Object -Skip $keep
