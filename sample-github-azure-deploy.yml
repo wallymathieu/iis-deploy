@@ -55,8 +55,9 @@ jobs:
           name: .net-app
           path: myapp
       - name: IIS Versioned Deploy
-        uses: wallymathieu/iis-deploy@main
+        uses: veraw/iis-deploy@main
         with:
           website-name: simple-site
+          app-name: virtual-app
           source-path: ./myapp
           destination-path: C:\simple-site

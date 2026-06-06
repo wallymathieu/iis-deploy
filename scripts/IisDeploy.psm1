@@ -35,18 +35,29 @@ function Move-Site {
     param (
         [Parameter(Mandatory=$true)]
         [string]$siteName,
+        [Parameter(Mandatory=$false)]
+        [string]$appName = "",
         [Parameter(Mandatory=$true)]
         [string]$newPath
     )
     Import-Module WebAdministration -ErrorAction Stop
-    $site = Get-Website -Name $siteName -ErrorAction SilentlyContinue
+    if (-not [string]::IsNullOrWhiteSpace($appName)) {
+        $siteItem = "$siteName\$appName"
+        $sitePath = "IIS:\Sites\$siteName\$appName"
+        $site = Get-WebApplication -Site $siteName -Name $appName -ErrorAction SilentlyContinue
+    } else {
+        $siteItem = "$siteName"
+        $sitePath = "IIS:\Sites\$siteName"
+        $site = Get-Website -Name $siteName -ErrorAction SilentlyContinue
+    }
+
     if ($site) {
-        Write-Host "Updating physical path for site '$siteName' to '$newPath'"
-        Set-ItemProperty -Path "IIS:\Sites\$siteName" -Name physicalPath -Value $newPath
+        Write-Host "Updating physical path for site '$siteItem' to '$newPath'"
+        Set-ItemProperty -Path $sitePath -Name physicalPath -Value $newPath
         Write-Host "Site path updated successfully."
     } else {
-        Write-Error "Site '$siteName' not found in IIS."
-        throw "Site '$siteName' not found in IIS."
+        Write-Error "Site '$siteItem' not found in IIS."
+        throw "Site '$siteItem' not found in IIS."
     }
 }
 
