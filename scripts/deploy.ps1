@@ -15,6 +15,7 @@ param(
     [string]$releaseParentDir,
 
     [Parameter(Mandatory=$false)]
+    [ValidateRange(1, [int]::MaxValue)]
     [int]$keep = 4
 )
 
@@ -40,4 +41,3 @@ catch {
     Write-Error "An error occurred during deployment: $_"
     exit 1
 }
-
