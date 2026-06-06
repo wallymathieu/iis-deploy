@@ -35,18 +35,29 @@ function Move-Site {
     param (
         [Parameter(Mandatory=$true)]
         [string]$siteName,
+        [Parameter(Mandatory=$false)]
+        [string]$appName = "",
         [Parameter(Mandatory=$true)]
         [string]$newPath
     )
     Import-Module WebAdministration -ErrorAction Stop
-    $site = Get-Website -Name $siteName -ErrorAction SilentlyContinue
+    if (-not [string]::IsNullOrWhiteSpace($appName)) {
+        $siteItem = "$siteName\$appName"
+        $sitePath = "IIS:\Sites\$siteName\$appName"
+        $site = Get-WebApplication -Site $siteName -Name $appName -ErrorAction SilentlyContinue
+    } else {
+        $siteItem = "$siteName"
+        $sitePath = "IIS:\Sites\$siteName"
+        $site = Get-Website -Name $siteName -ErrorAction SilentlyContinue
+    }
+
     if ($site) {
-        Write-Host "Updating physical path for site '$siteName' to '$newPath'"
-        Set-ItemProperty -Path "IIS:\Sites\$siteName" -Name physicalPath -Value $newPath
+        Write-Host "Updating physical path for site '$siteItem' to '$newPath'"
+        Set-ItemProperty -Path $sitePath -Name physicalPath -Value $newPath
         Write-Host "Site path updated successfully."
     } else {
-        Write-Error "Site '$siteName' not found in IIS."
-        throw "Site '$siteName' not found in IIS."
+        Write-Error "Site '$siteItem' not found in IIS."
+        throw "Site '$siteItem' not found in IIS."
     }
 }
 
@@ -57,7 +68,19 @@ function Cleanup-OldDirectories {
         [string]$targetFolder,
         [int]$keep = 4
     )
-    $releaseDirs = Get-ChildItem -Path $targetFolder -Directory | Where-Object { $_.Name -match '^r_\d+$' } | Sort-Object -Property @{Expression = {[int]($_.Name -replace 'r_','')} } -Descending
+    if ($keep -lt 1) {
+        throw "keep must be at least 1."
+    }
+
+    $allReleaseDirs = Get-ChildItem -Path $targetFolder -Directory | Where-Object { $_.Name -match '^r_\d+$' }
+    $unsafeReleaseDirs = $allReleaseDirs | Where-Object { $_.Attributes -band [System.IO.FileAttributes]::ReparsePoint }
+    foreach ($unsafeDir in $unsafeReleaseDirs) {
+        Write-Warning "Skipping release folder '$($unsafeDir.FullName)' because it is a reparse point."
+    }
+
+    $releaseDirs = $allReleaseDirs |
+        Where-Object { -not ($_.Attributes -band [System.IO.FileAttributes]::ReparsePoint) } |
+        Sort-Object -Property @{Expression = {[int]($_.Name -replace 'r_','')} } -Descending
     
     if ($releaseDirs.Count -gt $keep) {
         $dirsToRemove = $releaseDirs | Select-Object -Skip $keep

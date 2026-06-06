@@ -8,10 +8,14 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$siteName,
 
+    [Parameter(Mandatory=$false)]
+    [string]$appName = "",
+
     [Parameter(Mandatory=$true)]
     [string]$releaseParentDir,
 
     [Parameter(Mandatory=$false)]
+    [ValidateRange(1, [int]::MaxValue)]
     [int]$keep = 4
 )
 
@@ -27,7 +31,7 @@ try {
     
     Deploy-Files -sourceDir $sourceDir -destinationDir $newReleaseDir
     
-    Move-Site -siteName $siteName -newPath $newReleaseDir
+    Move-Site -siteName $siteName -appName $appName -newPath $newReleaseDir
     
     Cleanup-OldDirectories -targetFolder $releaseParentDir -keep $keep
     
@@ -37,4 +41,3 @@ catch {
     Write-Error "An error occurred during deployment: $_"
     exit 1
 }
-

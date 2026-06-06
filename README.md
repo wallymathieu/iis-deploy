@@ -1,6 +1,6 @@
-# IIS Versioned Deploy action
+# IIS Rotational Deploy action
 
-This action allows to deploy a website on IIS.
+This action allows to deploy a website on IIS (including virtual applications within site).
 
 Deploy to IIS using PowerShell script to avoid downtime.
 
@@ -13,6 +13,7 @@ Deploy to IIS using PowerShell script to avoid downtime.
 | Input | Required | Example | Default Value | Description |
 |-|-|-|-|-|
 | `website-name`     | Yes | `www.yourwebsite.ca` | | IIS website name |
+| `app-name`         | No  | `virt-app` | | IIS website virtual application name | 
 | `source-path`      | Yes | `${{ github.workspace }}\website\publish` | | The path to the source directory that will be deployed |
 | `destination-path` | Yes | `C:\inetpub\website-releases` | | The path to the site directory that will be deployed |
 | `number-to-keep`   | No  | `4` | | Number of previous deployments to keep |
@@ -39,9 +40,10 @@ r_5  <-- IIS points here
 
 <!-- start usage -->
 ```yaml
-- uses: wallymathieu/iis-deploy@main
+- uses: wallymathieu/iis-deploy@af23a6d2f13062a20d60196ada2528a400e829ca
   with:
     website-name: 'MyWebsite'
+    app-name: 'virtual_app'
     source-path: '${{ github.workspace }}\website\publish'
     destination-path: 'C:\inetpub\website-releases'
     number-to-keep: 2
@@ -65,11 +67,11 @@ jobs:
     runs-on: [self-hosted, "${{ matrix.prod-tag }}"]
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: .net-app
           path: website\publish
-      - uses: wallymathieu/iis-deploy@main
+      - uses: wallymathieu/iis-deploy@af23a6d2f13062a20d60196ada2528a400e829ca
         with:
           website-name: 'MyWebsite'
           source-path: '${{ github.workspace }}\website\publish'
@@ -79,4 +81,3 @@ jobs:
 ## License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
-

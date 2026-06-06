@@ -1,9 +1,13 @@
 name: 'IIS Versioned Deploy'
-description: 'Allows to deploy a website on IIS with less downtime'
+description: 'Allows to deploy a website on IIS with less downtime by using rotational folders. Supports Site and/or Site/VirtualApp'
 inputs:
-  website-name:
-    description: "IIS website name"
+  site-name:
+    description: "IIS site name"
     required: true
+  app-name:
+    description: "IIS site application name (eg: Virtual application name)"
+    required: false
+    default: ''
   source-path:
     description: "The path to the source directory that will be deployed"
     required: true
@@ -18,14 +22,21 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Deploy Application ${{ inputs.website-name }} on IIS
+    - name: Deploy Application ${{ inputs.site-name }} ${{ inputs.app-name }} on IIS
       shell: powershell
-      run: >
-        ${{ github.action_path }}/scripts/deploy.ps1
-        -sourceDir ${{ inputs.source-path }}
-        -siteName ${{ inputs.website-name }}
-        -releaseParentDir ${{ inputs.destination-path }}
-        -keep ${{ inputs.number-to-keep }}
+      run: |
+        $deployArgs = @{
+          sourceDir = '${{ inputs.source-path }}'
+          siteName = '${{ inputs.site-name }}'
+          releaseParentDir = '${{ inputs.destination-path }}'
+          keep = '${{ inputs.number-to-keep }}'
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace('${{ inputs.app-name }}')) {
+          $deployArgs.appName = '${{ inputs.app-name }}'
+        }
+
+        & "${{ github.action_path }}/scripts/deploy.ps1" @deployArgs
 branding:
   icon: upload-cloud
   color: blue
