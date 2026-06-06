@@ -1,0 +1,70 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "cdbae55f-a31a-47b4-8b89-037480ee6f14",
+    "name": "IISVersionedAppDeployment",
+    "friendlyName": "IIS Versioned App Deployment Task",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "helpMarkDown": "",
+    "author": "Oskar Gewalli",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Deploy $(WebSiteName) on IIS",
+    "inputs": [
+        {
+            "name": "WebSiteName",
+            "type": "string",
+            "label": "Website Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of an existing IIS website on the target machine"
+        },
+        {
+            "name": "AppName",
+            "type": "string",
+            "label": "Application Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional IIS virtual application name within the site. Leave empty to deploy the site root."
+        },
+        {
+            "name": "SourcePath",
+            "type": "filePath",
+            "label": "Source Path",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "Path to the source directory that will be deployed"
+        },
+        {
+            "name": "DestinationPath",
+            "type": "filePath",
+            "label": "Destination Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the parent directory where versioned release folders will be created"
+        },
+        {
+            "name": "NumberToKeep",
+            "type": "string",
+            "label": "Number of releases to keep",
+            "defaultValue": "4",
+            "required": false,
+            "helpMarkDown": "Number of previous deployments to retain"
+        }
+    ],
+    "execution": {
+        "Node20_1": {
+            "target": "index.js"
+        }
+    }
+}
