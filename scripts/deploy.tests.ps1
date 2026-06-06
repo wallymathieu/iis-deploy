@@ -45,5 +45,16 @@ Describe 'Cleanup-OldDirectories' {
         finally {
             Remove-Item -Path $tempDir.FullName -Recurse -Force
         }
+
+        It 'should throw when keep is less than 1' {
+            $tempDir = New-Item -Type Directory -Path (Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString()))
+            New-Item -Type Directory -Path (Join-Path $tempDir.FullName 'r_1') | Out-Null
+            try {
+                { Cleanup-OldDirectories -targetFolder $tempDir.FullName -keep 0 } | Should -Throw '*at least 1*'
+            }
+            finally {
+                Remove-Item -Path $tempDir.FullName -Recurse -Force
+            }
+        }
     }
 }
