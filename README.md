@@ -1,6 +1,7 @@
-# IIS Rotational Deploy action
+# IIS Versioned Deploy
 
-This action allows to deploy a website on IIS (including virtual applications within site).
+Deploy a website on IIS (including virtual applications within a site) as a
+GitHub Action or an Azure DevOps pipeline task.
 
 Deploy to IIS using PowerShell script to avoid downtime.
 
@@ -76,6 +77,62 @@ jobs:
           website-name: 'MyWebsite'
           source-path: '${{ github.workspace }}\website\publish'
           destination-path: 'C:\inetpub\website-releases'
+```
+
+## Azure DevOps task
+
+This repository also ships the same deployment logic as an Azure DevOps pipeline
+task (`buildandreleasetask/`), packaged as an extension via `vss-extension.json`.
+
+### Inputs
+
+| Input | Required | Description |
+|-|-|-|
+| `WebSiteName`     | Yes | Name of an existing IIS website on the target machine |
+| `AppName`         | No  | Optional IIS virtual application name within the site |
+| `SourcePath`      | Yes | Path to the source directory that will be deployed |
+| `DestinationPath` | Yes | Parent directory where versioned release folders are created |
+| `NumberToKeep`    | No  | Number of previous deployments to retain (default `4`) |
+
+Example YAML usage once the extension is installed in your organization:
+
+```yaml
+- task: IISVersionedAppDeployment@0
+  inputs:
+    WebSiteName: 'MyWebsite'
+    AppName: 'virtual_app'        # optional
+    SourcePath: '$(System.DefaultWorkingDirectory)/website/publish'
+    DestinationPath: 'C:\inetpub\website-releases'
+    NumberToKeep: 2
+```
+
+The task runs on the Node 20 handler and shells out to the same `deploy.ps1`
+PowerShell script, so it requires a **self-hosted Windows agent** with IIS and
+the `WebAdministration` module available.
+
+### Building and packaging
+
+```bash
+cd buildandreleasetask
+npm install
+npm run build        # compiles index.ts and copies the PowerShell scripts
+npm test             # runs the task validation tests
+npm prune --omit=dev # keep only runtime deps for packaging
+
+# From the repository root, set your publisher id in vss-extension.json, then:
+npx tfx-cli extension create --manifest-globs vss-extension.json
+```
+
+This produces a `.vsix` you can upload to the
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/manage) and
+install into your Azure DevOps organization. Before packaging, replace
+`your-publisher-id` in `vss-extension.json` with your own
+[publisher id](https://learn.microsoft.com/azure/devops/extend/publish/overview).
+
+The Pester tests for the PowerShell deployment logic can be run with:
+
+```powershell
+Invoke-Pester ./scripts/deploy.tests.ps1
 ```
 
 ## License
