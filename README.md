@@ -40,7 +40,7 @@ r_5  <-- IIS points here
 
 <!-- start usage -->
 ```yaml
-- uses: veraw/iis-deploy@main
+- uses: wallymathieu/iis-deploy@main
   with:
     website-name: 'MyWebsite'
     app-name: 'virtual_app'
@@ -71,7 +71,7 @@ jobs:
         with:
           name: .net-app
           path: website\publish
-      - uses: veraw/iis-deploy@main
+      - uses: wallymathieu/iis-deploy@main
         with:
           website-name: 'MyWebsite'
           source-path: '${{ github.workspace }}\website\publish'
