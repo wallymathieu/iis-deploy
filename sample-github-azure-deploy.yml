@@ -55,7 +55,7 @@ jobs:
           name: .net-app
           path: myapp
       - name: IIS Versioned Deploy
-        uses: wallymathieu/iis-deploy@af23a6d2f13062a20d60196ada2528a400e829ca
+        uses: veraw/iis-deploy@1abc9056a815f44f643c0d0def8722de9b880946
         with:
           website-name: simple-site
           app-name: virtual-app
