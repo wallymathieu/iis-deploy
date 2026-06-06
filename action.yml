@@ -1,4 +1,4 @@
-name: 'IIS Rotational Deploy'
+name: 'IIS Versioned Deploy'
 description: 'Allows to deploy a website on IIS with less downtime by using rotational folders. Supports Site and/or Site/VirtualApp'
 inputs:
   site-name:
