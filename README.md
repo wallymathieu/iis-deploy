@@ -1,6 +1,6 @@
-# IIS Versioned Deploy action
+# IIS Rotational Deploy action
 
-This action allows to deploy a website on IIS.
+This action allows to deploy a website on IIS (including virtual applications within site).
 
 Deploy to IIS using PowerShell script to avoid downtime.
 
@@ -13,6 +13,7 @@ Deploy to IIS using PowerShell script to avoid downtime.
 | Input | Required | Example | Default Value | Description |
 |-|-|-|-|-|
 | `website-name`     | Yes | `www.yourwebsite.ca` | | IIS website name |
+| `app-name`         | No  | `virt-app` | | IIS website virtual application name | 
 | `source-path`      | Yes | `${{ github.workspace }}\website\publish` | | The path to the source directory that will be deployed |
 | `destination-path` | Yes | `C:\inetpub\website-releases` | | The path to the site directory that will be deployed |
 | `number-to-keep`   | No  | `4` | | Number of previous deployments to keep |
@@ -42,6 +43,7 @@ r_5  <-- IIS points here
 - uses: wallymathieu/iis-deploy@main
   with:
     website-name: 'MyWebsite'
+    app-name: 'virtual_app'
     source-path: '${{ github.workspace }}\website\publish'
     destination-path: 'C:\inetpub\website-releases'
     number-to-keep: 2
