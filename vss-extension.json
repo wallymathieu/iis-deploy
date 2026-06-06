@@ -1,0 +1,64 @@
+{
+    "manifestVersion": 1,
+    "id": "iis-versioned-deploy",
+    "name": "IIS Versioned Deploy",
+    "version": "0.1.1",
+    "publisher": "your-publisher-id",
+    "public": false,
+    "description": "Deploy a website (and/or a virtual application within it) to IIS with reduced downtime by switching the physical path to a new versioned release folder.",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "tags": [
+        "IIS",
+        "Deploy",
+        "Release",
+        "Windows",
+        "PowerShell"
+    ],
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "icons": {
+        "default": "images/extension-icon.png"
+    },
+    "content": {
+        "details": {
+            "path": "README.md"
+        },
+        "license": {
+            "path": "LICENSE"
+        }
+    },
+    "links": {
+        "repository": {
+            "uri": "https://github.com/wallymathieu/iis-deploy"
+        },
+        "issues": {
+            "uri": "https://github.com/wallymathieu/iis-deploy/issues"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/wallymathieu/iis-deploy"
+    },
+    "files": [
+        {
+            "path": "buildandreleasetask"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "iis-versioned-deploy-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildandreleasetask"
+            }
+        }
+    ]
+}

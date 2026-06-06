@@ -4,6 +4,7 @@ import path = require('path');
 async function run() {
     try {
         const webSiteName: string = tl.getInput('WebSiteName', true)!;
+        const appName: string = tl.getInput('AppName', false) || '';
         const sourcePath: string = tl.getPathInput('SourcePath', true, true)!;
         const destinationPath: string = tl.getPathInput('DestinationPath', true, false)!;
         const numberToKeep: string = tl.getInput('NumberToKeep', false) || '4';
@@ -24,6 +25,10 @@ async function run() {
             .arg(destinationPath)
             .arg('-keep')
             .arg(numberToKeep);
+
+        if (appName) {
+            powershell.arg('-appName').arg(appName);
+        }
 
         const exitCode = await powershell.exec();
         if (exitCode !== 0) {
