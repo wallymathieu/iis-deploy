@@ -12,7 +12,6 @@ inputs:
     description: "The path to the source directory that will be deployed"
     required: true
   destination-path:
-  destination-path:
     description: "The parent path where versioned release folders are created. Defaults to the parent folder of the current site directory."
     required: false
     default: ''
