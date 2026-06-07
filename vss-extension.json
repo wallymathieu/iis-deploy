@@ -2,9 +2,9 @@
     "manifestVersion": 1,
     "id": "iis-versioned-deploy",
     "name": "IIS Versioned Deploy",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "publisher": "wallymathieu",
-    "public": false,
+    "public": true,
     "description": "Deploy a website (and/or a virtual application within it) to IIS with reduced downtime by switching the physical path to a new versioned release folder.",
     "categories": [
         "Azure Pipelines"
