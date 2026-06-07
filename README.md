@@ -5,6 +5,8 @@ GitHub Action or an Azure DevOps pipeline task.
 
 Deploy to IIS using PowerShell script to avoid downtime.
 
+You can find it on [Azure Devops as iis-versioned-deploy](https://marketplace.visualstudio.com/items?itemName=wallymathieu.iis-versioned-deploy)
+
 ## Requirements
 
 - A Windows runner
