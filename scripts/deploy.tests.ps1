@@ -192,8 +192,14 @@ Describe 'Cleanup-OldDirectories' {
         1..3 | ForEach-Object {
             New-Item -Type Directory -Path (Join-Path $tempDir.FullName "r_$_") | Out-Null
         }
-        New-Item -ItemType SymbolicLink -Path (Join-Path $tempDir.FullName 'r_4') -Target $realTarget.FullName | Out-Null
         try {
+            try {
+                New-Item -ItemType SymbolicLink -Path (Join-Path $tempDir.FullName 'r_4') -Target $realTarget.FullName -ErrorAction Stop | Out-Null
+            }
+            catch {
+                Set-ItResult -Skipped -Because "symbolic links cannot be created in this environment: $_"
+                return
+            }
             Cleanup-OldDirectories -targetFolder $tempDir.FullName -keep 1 -WarningAction SilentlyContinue
             $remaining = Get-ChildItem -Path $tempDir.FullName -Directory
             # The symlink (r_4) is never removed, and only one real folder is kept.
