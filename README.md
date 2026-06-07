@@ -18,7 +18,7 @@ You can find it on [Azure Devops as iis-versioned-deploy](https://marketplace.vi
 | `website-name`     | Yes | `www.yourwebsite.ca` | | IIS website name |
 | `app-name`         | No  | `virt-app` | | IIS website virtual application name | 
 | `source-path`      | Yes | `${{ github.workspace }}\website\publish` | | The path to the source directory that will be deployed |
-| `destination-path` | Yes | `C:\inetpub\website-releases` | | The path to the site directory that will be deployed |
+| `destination-path` | No  | `C:\inetpub\website-releases` | | The parent path where versioned release folders are created. Defaults to the parent folder of the current site directory. |
 | `release-prefix`   | No  | `r_` | `r_` | Prefix used for the versioned release folders |
 | `number-to-keep`   | No  | `4` | | Number of previous deployments to keep |
 
@@ -28,6 +28,9 @@ This action deploys the website to a versioned directory inside the `destination
 The directories are named using the pattern `<release-prefix><version>`, for example
 `r_1`, `r_2`, etc. The prefix defaults to `r_` and can be changed with the
 `release-prefix` input.
+
+If `destination-path` is omitted, the parent folder of the site's current physical
+path is used as the destination, so existing versioned folders next to it are reused.
 
 When a new deployment runs:
 1. A new directory is created (e.g. `r_5`).
@@ -100,7 +103,7 @@ task (`buildandreleasetask/`), packaged as an extension via `vss-extension.json`
 | `WebSiteName`     | Yes | Name of an existing IIS website on the target machine |
 | `AppName`         | No  | Optional IIS virtual application name within the site |
 | `SourcePath`      | Yes | Path to the source directory that will be deployed |
-| `DestinationPath` | Yes | Parent directory where versioned release folders are created |
+| `DestinationPath` | No  | Parent directory where versioned release folders are created. Defaults to the parent folder of the current site directory. |
 | `ReleasePrefix`   | No  | Prefix used for the versioned release folders (default `r_`) |
 | `NumberToKeep`    | No  | Number of previous deployments to retain (default `4`) |
 

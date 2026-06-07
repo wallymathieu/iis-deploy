@@ -6,7 +6,7 @@ async function run() {
         const webSiteName: string = tl.getInput('WebSiteName', true)!;
         const appName: string = tl.getInput('AppName', false) || '';
         const sourcePath: string = tl.getPathInput('SourcePath', true, true)!;
-        const destinationPath: string = tl.getPathInput('DestinationPath', true, false)!;
+        const destinationPath: string = tl.getPathInput('DestinationPath', false, false) || '';
         const releasePrefix: string = tl.getInput('ReleasePrefix', false) || 'r_';
         const numberToKeep: string = tl.getInput('NumberToKeep', false) || '4';
 
@@ -22,12 +22,14 @@ async function run() {
             .arg(sourcePath)
             .arg('-siteName')
             .arg(webSiteName)
-            .arg('-releaseParentDir')
-            .arg(destinationPath)
-            .arg('-releasePrefix')
-            .arg(releasePrefix)
             .arg('-keep')
             .arg(numberToKeep);
+
+        if (destinationPath) {
+            powershell.arg('-releaseParentDir').arg(destinationPath);
+        }
+
+        powershell.arg('-releasePrefix').arg(releasePrefix);
 
         if (appName) {
             powershell.arg('-appName').arg(appName);
