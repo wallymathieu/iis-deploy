@@ -28,6 +28,36 @@ function Deploy-Files {
     Copy-Item -Path (Join-Path $sourceDir '*') -Destination $destinationDir -Recurse -Force
 }
 
+function Get-SitePhysicalPath {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$siteName,
+        [Parameter(Mandatory=$false)]
+        [string]$appName = ""
+    )
+    Import-Module WebAdministration -ErrorAction Stop
+    if (-not [string]::IsNullOrWhiteSpace($appName)) {
+        $siteItem = "$siteName\$appName"
+        $sitePath = "IIS:\Sites\$siteName\$appName"
+        $site = Get-WebApplication -Site $siteName -Name $appName -ErrorAction SilentlyContinue
+    } else {
+        $siteItem = "$siteName"
+        $sitePath = "IIS:\Sites\$siteName"
+        $site = Get-Website -Name $siteName -ErrorAction SilentlyContinue
+    }
+
+    if (-not $site) {
+        throw "Site '$siteItem' not found in IIS."
+    }
+
+    $physicalPath = (Get-ItemProperty -Path $sitePath -Name physicalPath -ErrorAction SilentlyContinue).physicalPath
+    if ([string]::IsNullOrWhiteSpace($physicalPath)) {
+        throw "Could not determine the current physical path for site '$siteItem'."
+    }
+    return $physicalPath
+}
+
 function Move-Site {
     [CmdletBinding()]
     param (
@@ -91,4 +121,4 @@ function Cleanup-OldDirectories {
     }
 }
 
-Export-ModuleMember -Function Get-NextFolderName, Deploy-Files, Move-Site, Cleanup-OldDirectories
+Export-ModuleMember -Function Get-NextFolderName, Deploy-Files, Get-SitePhysicalPath, Move-Site, Cleanup-OldDirectories

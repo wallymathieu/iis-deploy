@@ -11,7 +11,7 @@ param(
     [Parameter(Mandatory=$false)]
     [string]$appName = "",
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$false)]
     [string]$releaseParentDir,
 
     [Parameter(Mandatory=$false)]
@@ -25,6 +25,12 @@ Import-Module $modulePath -Force
 
 try {
     Write-Host "Starting deployment for site '$siteName'"
+    
+    if ([string]::IsNullOrWhiteSpace($releaseParentDir)) {
+        $currentPath = Get-SitePhysicalPath -siteName $siteName -appName $appName
+        $releaseParentDir = Split-Path -Parent $currentPath
+        Write-Host "No releaseParentDir provided. Using parent of current site path: '$releaseParentDir'"
+    }
     
     $nextFolderName = Get-NextFolderName -targetFolder $releaseParentDir
     $newReleaseDir = Join-Path $releaseParentDir $nextFolderName

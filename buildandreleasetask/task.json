@@ -50,8 +50,8 @@
             "type": "filePath",
             "label": "Destination Path",
             "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "Path to the parent directory where versioned release folders will be created"
+            "required": false,
+            "helpMarkDown": "Path to the parent directory where versioned release folders will be created. Leave empty to use the parent folder of the current site directory."
         },
         {
             "name": "NumberToKeep",

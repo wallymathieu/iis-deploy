@@ -6,7 +6,7 @@ async function run() {
         const webSiteName: string = tl.getInput('WebSiteName', true)!;
         const appName: string = tl.getInput('AppName', false) || '';
         const sourcePath: string = tl.getPathInput('SourcePath', true, true)!;
-        const destinationPath: string = tl.getPathInput('DestinationPath', true, false)!;
+        const destinationPath: string = tl.getPathInput('DestinationPath', false, false) || '';
         const numberToKeep: string = tl.getInput('NumberToKeep', false) || '4';
 
         const scriptPath = path.join(__dirname, 'scripts', 'deploy.ps1');
@@ -21,10 +21,12 @@ async function run() {
             .arg(sourcePath)
             .arg('-siteName')
             .arg(webSiteName)
-            .arg('-releaseParentDir')
-            .arg(destinationPath)
             .arg('-keep')
             .arg(numberToKeep);
+
+        if (destinationPath) {
+            powershell.arg('-releaseParentDir').arg(destinationPath);
+        }
 
         if (appName) {
             powershell.arg('-appName').arg(appName);

@@ -12,8 +12,9 @@ inputs:
     description: "The path to the source directory that will be deployed"
     required: true
   destination-path:
-    description: "The path to the site directory that will be deployed"
-    required: true
+    description: "The parent path where versioned release folders are created. Defaults to the parent folder of the current site directory."
+    required: false
+    default: ''
   number-to-keep:
     description: "Number of previous deployments to keep"
     required: false
@@ -28,8 +29,11 @@ runs:
         $deployArgs = @{
           sourceDir = '${{ inputs.source-path }}'
           siteName = '${{ inputs.site-name }}'
-          releaseParentDir = '${{ inputs.destination-path }}'
           keep = '${{ inputs.number-to-keep }}'
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace('${{ inputs.destination-path }}')) {
+          $deployArgs.releaseParentDir = '${{ inputs.destination-path }}'
         }
 
         if (-not [string]::IsNullOrWhiteSpace('${{ inputs.app-name }}')) {

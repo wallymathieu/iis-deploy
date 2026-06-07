@@ -18,13 +18,16 @@ You can find it on [Azure Devops as iis-versioned-deploy](https://marketplace.vi
 | `website-name`     | Yes | `www.yourwebsite.ca` | | IIS website name |
 | `app-name`         | No  | `virt-app` | | IIS website virtual application name | 
 | `source-path`      | Yes | `${{ github.workspace }}\website\publish` | | The path to the source directory that will be deployed |
-| `destination-path` | Yes | `C:\inetpub\website-releases` | | The path to the site directory that will be deployed |
+| `destination-path` | No  | `C:\inetpub\website-releases` | | The parent path where versioned release folders are created. Defaults to the parent folder of the current site directory. |
 | `number-to-keep`   | No  | `4` | | Number of previous deployments to keep |
 
 ## How it works
 
 This action deploys the website to a versioned directory inside the `destination-path`.
 The directories are named using the pattern `r_<version>`, for example `r_1`, `r_2`, etc.
+
+If `destination-path` is omitted, the parent folder of the site's current physical
+path is used as the destination, so existing versioned folders next to it are reused.
 
 When a new deployment runs:
 1. A new directory is created (e.g. `r_5`).
@@ -97,7 +100,7 @@ task (`buildandreleasetask/`), packaged as an extension via `vss-extension.json`
 | `WebSiteName`     | Yes | Name of an existing IIS website on the target machine |
 | `AppName`         | No  | Optional IIS virtual application name within the site |
 | `SourcePath`      | Yes | Path to the source directory that will be deployed |
-| `DestinationPath` | Yes | Parent directory where versioned release folders are created |
+| `DestinationPath` | No  | Parent directory where versioned release folders are created. Defaults to the parent folder of the current site directory. |
 | `NumberToKeep`    | No  | Number of previous deployments to retain (default `4`) |
 
 Example YAML usage once the extension is installed in your organization:
