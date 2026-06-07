@@ -2,16 +2,19 @@ function Get-NextFolderName {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)]
-        [string]$targetFolder
+        [string]$targetFolder,
+        [Parameter(Mandatory=$false)]
+        [string]$releasePrefix = 'r_'
     )
-    $releaseDirs = Get-ChildItem -Path $targetFolder -Directory | Where-Object { $_.Name -match '^r_\d+$' }
+    $escapedPrefix = [regex]::Escape($releasePrefix)
+    $releaseDirs = Get-ChildItem -Path $targetFolder -Directory | Where-Object { $_.Name -match "^$escapedPrefix\d+$" }
     if (-not $releaseDirs) {
         $latestVersion = 0
     } else {
-        $latestVersion = $releaseDirs | ForEach-Object { [int]($_.Name -replace 'r_', '') } | Measure-Object -Maximum | ForEach-Object { $_.Maximum }
+        $latestVersion = $releaseDirs | ForEach-Object { [int]($_.Name -replace "^$escapedPrefix", '') } | Measure-Object -Maximum | ForEach-Object { $_.Maximum }
     }
     $newVersion = $latestVersion + 1
-    return "r_$newVersion"
+    return "$releasePrefix$newVersion"
 }
 
 function Deploy-Files {
@@ -64,13 +67,16 @@ function Cleanup-OldDirectories {
     param (
         [Parameter(Mandatory=$true)]
         [string]$targetFolder,
-        [int]$keep = 4
+        [int]$keep = 4,
+        [Parameter(Mandatory=$false)]
+        [string]$releasePrefix = 'r_'
     )
     if ($keep -lt 1) {
         throw "keep must be at least 1."
     }
 
-    $allReleaseDirs = Get-ChildItem -Path $targetFolder -Directory | Where-Object { $_.Name -match '^r_\d+$' }
+    $escapedPrefix = [regex]::Escape($releasePrefix)
+    $allReleaseDirs = Get-ChildItem -Path $targetFolder -Directory | Where-Object { $_.Name -match "^$escapedPrefix\d+$" }
     $unsafeReleaseDirs = $allReleaseDirs | Where-Object { $_.Attributes -band [System.IO.FileAttributes]::ReparsePoint }
     foreach ($unsafeDir in $unsafeReleaseDirs) {
         Write-Warning "Skipping release folder '$($unsafeDir.FullName)' because it is a reparse point."
@@ -78,7 +84,7 @@ function Cleanup-OldDirectories {
 
     $releaseDirs = $allReleaseDirs |
         Where-Object { -not ($_.Attributes -band [System.IO.FileAttributes]::ReparsePoint) } |
-        Sort-Object -Property @{Expression = {[int]($_.Name -replace 'r_','')} } -Descending
+        Sort-Object -Property @{Expression = {[int]($_.Name -replace "^$escapedPrefix",'')} } -Descending
     
     if ($releaseDirs.Count -gt $keep) {
         $dirsToRemove = $releaseDirs | Select-Object -Skip $keep

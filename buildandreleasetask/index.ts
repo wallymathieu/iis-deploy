@@ -7,6 +7,7 @@ async function run() {
         const appName: string = tl.getInput('AppName', false) || '';
         const sourcePath: string = tl.getPathInput('SourcePath', true, true)!;
         const destinationPath: string = tl.getPathInput('DestinationPath', true, false)!;
+        const releasePrefix: string = tl.getInput('ReleasePrefix', false) || 'r_';
         const numberToKeep: string = tl.getInput('NumberToKeep', false) || '4';
 
         const scriptPath = path.join(__dirname, 'scripts', 'deploy.ps1');
@@ -23,6 +24,8 @@ async function run() {
             .arg(webSiteName)
             .arg('-releaseParentDir')
             .arg(destinationPath)
+            .arg('-releasePrefix')
+            .arg(releasePrefix)
             .arg('-keep')
             .arg(numberToKeep);
 

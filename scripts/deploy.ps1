@@ -15,6 +15,9 @@ param(
     [string]$releaseParentDir,
 
     [Parameter(Mandatory=$false)]
+    [string]$releasePrefix = "r_",
+
+    [Parameter(Mandatory=$false)]
     [ValidateRange(1, [int]::MaxValue)]
     [int]$keep = 4
 )
@@ -26,14 +29,14 @@ Import-Module $modulePath -Force
 try {
     Write-Host "Starting deployment for site '$siteName'"
     
-    $nextFolderName = Get-NextFolderName -targetFolder $releaseParentDir
+    $nextFolderName = Get-NextFolderName -targetFolder $releaseParentDir -releasePrefix $releasePrefix
     $newReleaseDir = Join-Path $releaseParentDir $nextFolderName
     
     Deploy-Files -sourceDir $sourceDir -destinationDir $newReleaseDir
     
     Move-Site -siteName $siteName -appName $appName -newPath $newReleaseDir
     
-    Cleanup-OldDirectories -targetFolder $releaseParentDir -keep $keep
+    Cleanup-OldDirectories -targetFolder $releaseParentDir -keep $keep -releasePrefix $releasePrefix
     
     Write-Host "Deployment completed successfully."
 }

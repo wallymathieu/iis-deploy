@@ -19,12 +19,15 @@ You can find it on [Azure Devops as iis-versioned-deploy](https://marketplace.vi
 | `app-name`         | No  | `virt-app` | | IIS website virtual application name | 
 | `source-path`      | Yes | `${{ github.workspace }}\website\publish` | | The path to the source directory that will be deployed |
 | `destination-path` | Yes | `C:\inetpub\website-releases` | | The path to the site directory that will be deployed |
+| `release-prefix`   | No  | `r_` | `r_` | Prefix used for the versioned release folders |
 | `number-to-keep`   | No  | `4` | | Number of previous deployments to keep |
 
 ## How it works
 
 This action deploys the website to a versioned directory inside the `destination-path`.
-The directories are named using the pattern `r_<version>`, for example `r_1`, `r_2`, etc.
+The directories are named using the pattern `<release-prefix><version>`, for example
+`r_1`, `r_2`, etc. The prefix defaults to `r_` and can be changed with the
+`release-prefix` input.
 
 When a new deployment runs:
 1. A new directory is created (e.g. `r_5`).
@@ -98,6 +101,7 @@ task (`buildandreleasetask/`), packaged as an extension via `vss-extension.json`
 | `AppName`         | No  | Optional IIS virtual application name within the site |
 | `SourcePath`      | Yes | Path to the source directory that will be deployed |
 | `DestinationPath` | Yes | Parent directory where versioned release folders are created |
+| `ReleasePrefix`   | No  | Prefix used for the versioned release folders (default `r_`) |
 | `NumberToKeep`    | No  | Number of previous deployments to retain (default `4`) |
 
 Example YAML usage once the extension is installed in your organization:

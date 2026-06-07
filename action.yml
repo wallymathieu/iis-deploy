@@ -14,6 +14,10 @@ inputs:
   destination-path:
     description: "The path to the site directory that will be deployed"
     required: true
+  release-prefix:
+    description: "Prefix used for the versioned release folders (e.g. 'r_' produces r_1, r_2, ...)"
+    required: false
+    default: 'r_'
   number-to-keep:
     description: "Number of previous deployments to keep"
     required: false
@@ -30,6 +34,10 @@ runs:
           siteName = '${{ inputs.site-name }}'
           releaseParentDir = '${{ inputs.destination-path }}'
           keep = '${{ inputs.number-to-keep }}'
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace('${{ inputs.release-prefix }}')) {
+          $deployArgs.releasePrefix = '${{ inputs.release-prefix }}'
         }
 
         if (-not [string]::IsNullOrWhiteSpace('${{ inputs.app-name }}')) {

@@ -13,7 +13,7 @@ describe('IIS Versioned App Deployment task', function () {
         assert.ok(taskJson.execution && taskJson.execution.Node20_1, 'task must run on the Node20 handler');
 
         const inputNames: string[] = taskJson.inputs.map((i: { name: string }) => i.name);
-        for (const expected of ['WebSiteName', 'AppName', 'SourcePath', 'DestinationPath', 'NumberToKeep']) {
+        for (const expected of ['WebSiteName', 'AppName', 'SourcePath', 'DestinationPath', 'ReleasePrefix', 'NumberToKeep']) {
             assert.ok(inputNames.includes(expected), `task.json is missing input '${expected}'`);
         }
     });

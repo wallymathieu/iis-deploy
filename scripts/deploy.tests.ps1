@@ -27,6 +27,20 @@ Describe 'Get-NextFolderName' {
             Remove-Item -Path $tempDir.FullName -Recurse -Force
         }
     }
+
+    It 'should use a custom release prefix' {
+        $tempDir = New-Item -Type Directory -Path (Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString()))
+        New-Item -Type Directory -Path (Join-Path $tempDir.FullName 'rel-1') | Out-Null
+        New-Item -Type Directory -Path (Join-Path $tempDir.FullName 'rel-2') | Out-Null
+        New-Item -Type Directory -Path (Join-Path $tempDir.FullName 'r_9') | Out-Null
+        try {
+            $nextFolder = Get-NextFolderName -targetFolder $tempDir.FullName -releasePrefix 'rel-'
+            $nextFolder | Should -Be 'rel-3'
+        }
+        finally {
+            Remove-Item -Path $tempDir.FullName -Recurse -Force
+        }
+    }
 }
 
 Describe 'Cleanup-OldDirectories' {
@@ -41,6 +55,25 @@ Describe 'Cleanup-OldDirectories' {
             $remaining.Count | Should -Be 2
             ($remaining.Name -contains 'r_4') | Should -Be $true
             ($remaining.Name -contains 'r_5') | Should -Be $true
+        }
+        finally {
+            Remove-Item -Path $tempDir.FullName -Recurse -Force
+        }
+    }
+
+    It 'should respect a custom release prefix' {
+        $tempDir = New-Item -Type Directory -Path (Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString()))
+        1..5 | ForEach-Object {
+            New-Item -Type Directory -Path (Join-Path $tempDir.FullName "rel-$_") | Out-Null
+        }
+        New-Item -Type Directory -Path (Join-Path $tempDir.FullName 'r_1') | Out-Null
+        try {
+            Cleanup-OldDirectories -targetFolder $tempDir.FullName -keep 2 -releasePrefix 'rel-'
+            $remaining = Get-ChildItem -Path $tempDir.FullName -Directory
+            ($remaining.Name -contains 'rel-4') | Should -Be $true
+            ($remaining.Name -contains 'rel-5') | Should -Be $true
+            ($remaining.Name -contains 'rel-1') | Should -Be $false
+            ($remaining.Name -contains 'r_1') | Should -Be $true
         }
         finally {
             Remove-Item -Path $tempDir.FullName -Recurse -Force
