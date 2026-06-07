@@ -1,7 +1,8 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+# Builds the Azure DevOps task, packages it into a VSIX extension and
+# uploads the package as a workflow artifact.
+# For more information see: https://docs.github.com/en/actions/publishing-packages
 
-name: Build Task Package
+name: Build Azure DevOps Extension
 
 on:
   push:
@@ -9,24 +10,33 @@ on:
     tags: ['*']
   pull_request:
     branches: ['master','main']
-    
+
 jobs:
   build:
+    name: Build and package extension
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: |
+
+      - name: Install, build and test task
+        run: |
           npm ci
           npm run build
           npm test
           npm prune --omit=dev
         working-directory: buildandreleasetask
-      - run: npx tfx-cli extension create --manifest-globs vss-extension.json
-      - name: Upload Artifacts
+
+      - name: Create VSIX extension package
+        run: npx tfx-cli extension create --manifest-globs vss-extension.json
+
+      - name: Upload VSIX package
         uses: actions/upload-artifact@v4
         with:
-          name: nupkg-${{ matrix.runs-on }}
+          name: iis-versioned-deploy-vsix
           path: ./*.vsix
