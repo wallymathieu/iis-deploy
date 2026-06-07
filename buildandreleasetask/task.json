@@ -54,6 +54,14 @@
             "helpMarkDown": "Path to the parent directory where versioned release folders will be created. Leave empty to use the parent folder of the current site directory."
         },
         {
+            "name": "ReleasePrefix",
+            "type": "string",
+            "label": "Release folder prefix",
+            "defaultValue": "r_",
+            "required": false,
+            "helpMarkDown": "Prefix used for the versioned release folders (e.g. 'r_' produces r_1, r_2, ...)"
+        },
+        {
             "name": "NumberToKeep",
             "type": "string",
             "label": "Number of releases to keep",

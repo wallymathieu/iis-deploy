@@ -15,6 +15,10 @@ inputs:
     description: "The parent path where versioned release folders are created. Defaults to the parent folder of the current site directory."
     required: false
     default: ''
+  release-prefix:
+    description: "Prefix used for the versioned release folders (e.g. 'r_' produces r_1, r_2, ...)"
+    required: false
+    default: 'r_'
   number-to-keep:
     description: "Number of previous deployments to keep"
     required: false
@@ -34,6 +38,10 @@ runs:
 
         if (-not [string]::IsNullOrWhiteSpace('${{ inputs.destination-path }}')) {
           $deployArgs.releaseParentDir = '${{ inputs.destination-path }}'
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace('${{ inputs.release-prefix }}')) {
+          $deployArgs.releasePrefix = '${{ inputs.release-prefix }}'
         }
 
         if (-not [string]::IsNullOrWhiteSpace('${{ inputs.app-name }}')) {

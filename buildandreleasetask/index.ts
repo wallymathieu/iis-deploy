@@ -7,6 +7,7 @@ async function run() {
         const appName: string = tl.getInput('AppName', false) || '';
         const sourcePath: string = tl.getPathInput('SourcePath', true, true)!;
         const destinationPath: string = tl.getPathInput('DestinationPath', false, false) || '';
+        const releasePrefix: string = tl.getInput('ReleasePrefix', false) || 'r_';
         const numberToKeep: string = tl.getInput('NumberToKeep', false) || '4';
 
         const scriptPath = path.join(__dirname, 'scripts', 'deploy.ps1');
@@ -27,6 +28,8 @@ async function run() {
         if (destinationPath) {
             powershell.arg('-releaseParentDir').arg(destinationPath);
         }
+
+        powershell.arg('-releasePrefix').arg(releasePrefix);
 
         if (appName) {
             powershell.arg('-appName').arg(appName);
