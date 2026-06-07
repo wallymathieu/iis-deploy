@@ -1,5 +1,3 @@
-#Requires -Modules WebAdministration
-
 function Get-NextFolderName {
     [CmdletBinding()]
     param (
