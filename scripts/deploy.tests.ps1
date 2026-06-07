@@ -2,7 +2,7 @@
 
 BeforeAll {
     $here = Split-Path -Parent $PSCommandPath
-    Import-Module "$here\IisDeploy.psm1" -Force
+    Import-Module (Join-Path $here 'IisDeploy.psm1') -Force
 
     function New-TempDir {
         New-Item -Type Directory -Path (Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString()))
