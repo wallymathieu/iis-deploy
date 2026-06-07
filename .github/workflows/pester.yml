@@ -1,5 +1,8 @@
 name: PowerShell Module Tests
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: ['master', 'main']
@@ -16,11 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Pester
-        shell: pwsh
+        shell: powershell
         run: |
-          Install-Module -Name Pester -MinimumVersion 5.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
+          Install-Module -Name Pester -MinimumVersion 5.0.0 -Force -Scope CurrentUser
       - name: Run Pester tests
-        shell: pwsh
+        shell: powershell
         run: |
           $config = New-PesterConfiguration
           $config.Run.Path = './scripts'
