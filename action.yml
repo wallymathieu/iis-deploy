@@ -3,7 +3,12 @@ description: 'Allows to deploy a website on IIS with less downtime by using rota
 inputs:
   website-name:
     description: "IIS website name"
-    required: true
+    required: false
+    default: ''
+  site-name:
+    description: "Deprecated alias for website-name"
+    required: false
+    default: ''
   app-name:
     description: "IIS site application name (eg: Virtual application name)"
     required: false
@@ -27,12 +32,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Deploy Application ${{ inputs.website-name }} ${{ inputs.app-name }} on IIS
+    - name: Deploy Application ${{ inputs.website-name }}${{ inputs.site-name }} ${{ inputs.app-name }} on IIS
       shell: powershell
       run: |
+        $effectiveSiteName = if (-not [string]::IsNullOrWhiteSpace('${{ inputs.website-name }}')) { '${{ inputs.website-name }}' } else { '${{ inputs.site-name }}' }
         $deployArgs = @{
           sourceDir = '${{ inputs.source-path }}'
-          siteName = '${{ inputs.website-name }}'
+          siteName = $effectiveSiteName
           keep = '${{ inputs.number-to-keep }}'
         }
 
