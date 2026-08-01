@@ -15,7 +15,8 @@ You can find it on [Azure Devops as iis-versioned-deploy](https://marketplace.vi
 
 | Input | Required | Example | Default Value | Description |
 |-|-|-|-|-|
-| `website-name`     | Yes | `www.yourwebsite.ca` | | IIS website name |
+| `website-name`     | No  | `www.yourwebsite.ca` | | IIS website name (preferred). Required if `site-name` is not provided. |
+| `site-name`        | No  | `www.yourwebsite.ca` | | Deprecated alias for `website-name`. Required if `website-name` is not provided. |
 | `app-name`         | No  | `virt-app` | | IIS website virtual application name | 
 | `source-path`      | Yes | `${{ github.workspace }}\website\publish` | | The path to the source directory that will be deployed |
 | `destination-path` | No  | `C:\inetpub\website-releases` | | The parent path where versioned release folders are created. Defaults to the parent folder of the current site directory. |
@@ -147,6 +148,12 @@ The Pester tests for the PowerShell deployment logic can be run with:
 ```powershell
 Invoke-Pester ./scripts/deploy.tests.ps1
 ```
+
+## Alternatives
+
+- [ChristopheLav/iis-deploy](https://github.com/ChristopheLav/iis-deploy) – another GitHub Action for IIS deployment
+- [Octopus Deploy](https://octopus.com/) – a dedicated deployment automation tool with IIS support
+- [Azure DevOps Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines) connected to your GitHub repository
 
 ## License
 
