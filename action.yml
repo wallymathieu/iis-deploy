@@ -32,7 +32,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Deploy Application ${{ inputs.website-name }}${{ inputs.site-name }} ${{ inputs.app-name }} on IIS
+    - name: Deploy Application ${{ inputs.website-name != '' && inputs.website-name || inputs.site-name }} ${{ inputs.app-name }} on IIS
       shell: powershell
       run: |
         $effectiveSiteName = if (-not [string]::IsNullOrWhiteSpace('${{ inputs.website-name }}')) { '${{ inputs.website-name }}' } else { '${{ inputs.site-name }}' }
