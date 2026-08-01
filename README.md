@@ -148,6 +148,12 @@ The Pester tests for the PowerShell deployment logic can be run with:
 Invoke-Pester ./scripts/deploy.tests.ps1
 ```
 
+## Alternatives
+
+- [ChristopheLav/iis-deploy](https://github.com/ChristopheLav/iis-deploy) – another GitHub Action for IIS deployment
+- [Octopus Deploy](https://octopus.com/) – a dedicated deployment automation tool with IIS support
+- [Azure DevOps Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines) connected to your GitHub repository
+
 ## License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)

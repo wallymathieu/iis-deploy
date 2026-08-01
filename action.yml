@@ -1,8 +1,8 @@
 name: 'IIS Versioned Deploy'
 description: 'Allows to deploy a website on IIS with less downtime by using rotational folders. Supports Site and/or Site/VirtualApp'
 inputs:
-  site-name:
-    description: "IIS site name"
+  website-name:
+    description: "IIS website name"
     required: true
   app-name:
     description: "IIS site application name (eg: Virtual application name)"
@@ -27,12 +27,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Deploy Application ${{ inputs.site-name }} ${{ inputs.app-name }} on IIS
+    - name: Deploy Application ${{ inputs.website-name }} ${{ inputs.app-name }} on IIS
       shell: powershell
       run: |
         $deployArgs = @{
           sourceDir = '${{ inputs.source-path }}'
-          siteName = '${{ inputs.site-name }}'
+          siteName = '${{ inputs.website-name }}'
           keep = '${{ inputs.number-to-keep }}'
         }
 
