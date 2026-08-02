@@ -25,7 +25,7 @@ inputs:
     required: false
     default: 'r_'
   number-to-keep:
-    description: "Number of previous deployments to keep"
+    description: "Total number of release folders to retain, including the current deployment"
     required: false
     default: '4'
 
