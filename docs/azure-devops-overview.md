@@ -18,7 +18,11 @@ files locked or serving a half-copied directory.
 
 The task copies your published output into a new versioned directory inside the
 destination path and then repoints IIS at it. The directories are named using
-the pattern `r_<version>`, for example `r_1`, `r_2`, etc.
+the pattern `<release-prefix><version>`, for example `r_1`, `r_2`, etc. The
+prefix defaults to `r_` and can be changed with **ReleasePrefix**.
+
+If **DestinationPath** is omitted, the parent folder of the site's current
+physical path is used as the destination.
 
 When a new deployment runs:
 
@@ -48,8 +52,9 @@ downtime is minimal and rollbacks are as simple as repointing to a previous
 | `WebSiteName`     | Yes | Name of an existing IIS website on the target machine |
 | `AppName`         | No  | Optional IIS virtual application name within the site. Leave empty to deploy the site root |
 | `SourcePath`      | Yes | Path to the source directory that will be deployed |
-| `DestinationPath` | Yes | Parent directory where versioned release folders are created |
-| `NumberToKeep`    | No  | Number of previous deployments to retain (default `4`) |
+| `DestinationPath` | No  | Parent directory where versioned release folders are created. Defaults to the parent folder of the current site directory |
+| `ReleasePrefix`   | No  | Prefix used for versioned release folders (default `r_`) |
+| `NumberToKeep`    | No  | Total number of release folders to retain, including the current deployment (default `4`) |
 
 ## Usage
 
@@ -62,6 +67,7 @@ Add the task to a pipeline that runs on a self-hosted Windows agent:
     AppName: 'virtual_app'        # optional
     SourcePath: '$(System.DefaultWorkingDirectory)/website/publish'
     DestinationPath: 'C:\inetpub\website-releases'
+    ReleasePrefix: 'r_'
     NumberToKeep: 2
 ```
 

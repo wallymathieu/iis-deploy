@@ -9,7 +9,9 @@ You can find it on [Azure Devops as iis-versioned-deploy](https://marketplace.vi
 
 ## Requirements
 
-- A Windows runner
+- A Windows runner on the target machine.
+- IIS installed with the PowerShell `WebAdministration` module available.
+- An existing IIS website (and virtual application, if you deploy one).
 
 ## Inputs
 
@@ -21,7 +23,7 @@ You can find it on [Azure Devops as iis-versioned-deploy](https://marketplace.vi
 | `source-path`      | Yes | `${{ github.workspace }}\website\publish` | | The path to the source directory that will be deployed |
 | `destination-path` | No  | `C:\inetpub\website-releases` | | The parent path where versioned release folders are created. Defaults to the parent folder of the current site directory. |
 | `release-prefix`   | No  | `r_` | `r_` | Prefix used for the versioned release folders |
-| `number-to-keep`   | No  | `4` | | Number of previous deployments to keep |
+| `number-to-keep`   | No  | `4` | `4` | Total number of release folders to retain, including the current deployment |
 
 ## How it works
 
@@ -106,7 +108,7 @@ task (`buildandreleasetask/`), packaged as an extension via `vss-extension.json`
 | `SourcePath`      | Yes | Path to the source directory that will be deployed |
 | `DestinationPath` | No  | Parent directory where versioned release folders are created. Defaults to the parent folder of the current site directory. |
 | `ReleasePrefix`   | No  | Prefix used for the versioned release folders (default `r_`) |
-| `NumberToKeep`    | No  | Number of previous deployments to retain (default `4`) |
+| `NumberToKeep`    | No  | Total number of release folders to retain, including the current deployment (default `4`) |
 
 Example YAML usage once the extension is installed in your organization:
 
@@ -133,15 +135,15 @@ npm run build        # compiles index.ts and copies the PowerShell scripts
 npm test             # runs the task validation tests
 npm prune --omit=dev # keep only runtime deps for packaging
 
-# From the repository root, set your publisher id in vss-extension.json, then:
+# From the repository root:
 npx tfx-cli extension create --manifest-globs vss-extension.json
 ```
 
 This produces a `.vsix` you can upload to the
 [Visual Studio Marketplace](https://marketplace.visualstudio.com/manage) and
-install into your Azure DevOps organization. Before packaging, replace
-`your-publisher-id` in `vss-extension.json` with your own
-[publisher id](https://learn.microsoft.com/azure/devops/extend/publish/overview).
+install into your Azure DevOps organization. If packaging a fork, replace the
+`publisher` in `vss-extension.json` with your own
+[publisher ID](https://learn.microsoft.com/azure/devops/extend/publish/overview).
 
 The Pester tests for the PowerShell deployment logic can be run with:
 

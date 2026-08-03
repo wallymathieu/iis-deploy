@@ -67,7 +67,7 @@
             "label": "Number of releases to keep",
             "defaultValue": "4",
             "required": false,
-            "helpMarkDown": "Number of previous deployments to retain"
+            "helpMarkDown": "Total number of release folders to retain, including the current deployment"
         }
     ],
     "execution": {
