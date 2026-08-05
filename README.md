@@ -155,7 +155,6 @@ Invoke-Pester ./scripts/deploy.tests.ps1
 
 - [ChristopheLav/iis-deploy](https://github.com/ChristopheLav/iis-deploy) – another GitHub Action for IIS deployment
 - [Octopus Deploy](https://octopus.com/) – a dedicated deployment automation tool with IIS support
-- [Azure DevOps Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines) connected to your GitHub repository
 
 ## License
 
